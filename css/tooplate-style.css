@@ -3,7 +3,7 @@
 	padding: 0;
 	font-family: 'Open Sans', arial, sans-serif;
 }
-
+.visited-item
 body {
 	overflow-x: hidden;
 	background-color: #fff;
@@ -98,18 +98,22 @@ p {
 }
 
 .primary-button a {
-	text-decoration: none;
-	margin-top: 15px;
-	width: auto;
-	padding: 0px 18px;
-	height: 36px;
-	background-color: #ffe165;
-	font-size: 13px;
-	color: #121212;
-	font-weight: 600;
-	display: inline-block;
-	text-align: center;
-	line-height: 36px;
+	position: fixed;
+    bottom: 120px;
+    right: 20px;
+    background-color: #f39c12;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 18px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    transition: background-color 0.3s ease;
+}
+.primary-button .scroll-top:hover {
+    background-color: #e67e22;
+    color: #fff;
 }
 
 .owl-pagination {
@@ -380,6 +384,7 @@ p {
 .weathergroup {
 	padding: 80px 30px;
 }
+
 .weather-item h6 {
 	font-size: 18px;
 	font-weight: 900;
@@ -717,6 +722,11 @@ p {
 .visited-item {
 	box-shadow: 0px 5px 15px #ddd;
 	margin-bottom: 30px;
+	transition: transform ease 0.5s;
+}
+.visited-item:hover{
+	box-shadow: 0px 5px 15px #ffe165;
+	transform: scale(1.02);
 }
 
 .visited-item .text-content {
@@ -872,11 +882,12 @@ footer p em {
 	width: 100%;
 	overflow: hidden;
 	margin-bottom: 30px;
+	transition: transform 0.5s ease;
 }
 
-.contact-us h6 {
-	margin-bottom: 15px;
-	margin-top: 30px;
+.contact-us img:hover {
+	transform: scale(1.05);
+	transform-origin: center;
 	font-size: 16px;
 	font-weight: 700;
 	color: #121212;
