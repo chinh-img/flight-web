@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Username - Solaro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./css/profile.css">
+</head>
+<body>
+    <div class="container">
+        <div class="account-header">
+            <h1 class="account-title">My Account</h1>
+            <div class="account-actions">
+                <button class="page-direction-button">
+                    <a href="./home.html"><i class="fa fa-home"></i>Go Back Home</a>
+                </button>
+                <button class="btn btn-outline">
+                    <i class="fas fa-cog"></i> Settings
+                </button>
+                <button class="btn btn-primary signOut">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+        
+        <div class="account-content">
+            <div class="account-sidebar">
+                <div class="profile-card">
+                    <div class="profile-pic">
+                        <img src="https://i.pinimg.com/736x/dc/9c/61/dc9c614e3007080a5aff36aebb949474.jpg" alt="Profile Picture">
+                    </div>
+                    <h3 class="profile-name user-name" >Guest</h3>
+                    <p class="profile-email user-email">guest@example.com</p>
+                    <button class="btn btn-outline" style="width: 100%;">
+                        <i class="fas fa-pencil-alt edit-image"></i> Edit Profile Image
+                    </button>
+                </div>
+                
+                <div class="nav-menu">
+                    <a href="#" class="nav-item active">
+                        <i class="fas fa-user"></i> Personal Info
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fas fa-lock"></i> Security
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fas fa-credit-card"></i> Billing
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fas fa-history"></i> Activity Log
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fas fa-bell"></i> Notifications
+                    </a>
+                </div>
+            </div>
+            
+            <div class="account-main">
+                <div class="info-card">
+                    <div class="card-header">
+                        <h2 class="card-title">Personal Information</h2>
+                        <button class="btn btn-outline personal-edit">
+                            <i class="fas fa-pencil-alt"></i> Edit
+                        </button>
+                    </div>
+                    
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Username</div>
+                            <label class="info-value user-name" >Guest</label>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Email</div>
+                            <label class="info-value-nochange user-email">guest@example.com</label>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Phone</div>
+                            <label class="info-value user-phone">123-456-789</label>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Date of Birth</div>
+                            <label class="info-value user-birth">March 15, 1985</label>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Account Created</div>
+                            <label class="info-value-nochange user-created">January 12, 2020</label>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">View Booked Flights</div>
+                            <button class="btn btn-outline view-flights">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <div class="card-header">
+                        <h2 class="card-title">Address Information</h2>
+                    </div>
+                    
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Primary Address</div>
+                            <label class="info-value">123 Main Street, Apt 4B</label>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">City</div>
+                            <label class="info-value">Your city</label>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">State/Province</div>
+                            <label class="info-value">NY</label>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">ZIP/Postal Code</div>
+                            <label class="info-value">10001</label>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Country</div>
+                            <label class="info-value">United States</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <div class="card-header">
+                        <h2 class="card-title">Security</h2>
+                    </div>
+                    
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Last Login</div>
+                            <label class="info-value-nochange last-login">Today, 10:45 AM</label>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Two-Factor Auth</div>
+                            <div class="info-value-nochange" style="color: var(--success);">
+                                <i class="fas fa-check-circle"></i> Enabled
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Password Last Changed</div>
+                            <label class="info-value-nochange">3 months ago</label>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Reset Password</div>
+                            <button class="btn btn-outline reset-password">
+                                <i class="fas fa-key"></i> Reset Password
+                            </button>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Delete Account</div>
+                            <button class="btn btn-danger delete-account">
+                                <i class="fas fa-trash-alt"></i> Delete Account
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="security-alert">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>For your security, we recommend changing your password every 3 months.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script type="module" src="js/profile.js"></script>
+</body>
+</html>
