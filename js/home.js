@@ -47,7 +47,7 @@ function displayWeather(data) {
         const weatherHTML = `
         <div id="day${count}">
             <div class="row">
-                <div class="col-md-4">
+                
                     <div class="weather-item">
                         <h6>${city} (${dayNames[day]})</h6>
                         <div class="weather-icon">
@@ -56,12 +56,12 @@ function displayWeather(data) {
                         <span>${avg}&deg;C</span>
                         <ul class="time-weather">
                             ${items.slice(0, 4).map(i => {
-                                const hour = new Date(i.dt_txt).getHours(); // dx_txt: chuỗi thời gian được lấy từ API OpenWeatherMap. VD: "2023-10-01 12:00:00"
-                                return `<li>${hour}h <span>${Math.round(i.main.temp)}&deg;</span></li>`;
-                            }).join('')}
+            const hour = new Date(i.dt_txt).getHours(); // dx_txt: chuỗi thời gian được lấy từ API OpenWeatherMap. VD: "2023-10-01 12:00:00"
+            return `<li>${hour}h <span>${Math.round(i.main.temp)}&deg;</span></li>`;
+        }).join('')}
                         </ul>
                     </div>
-                </div>
+
             </div>
         </div>`;
         container.innerHTML += weatherHTML;
@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
     countriesOpts();
-    orderFlight(); 
+    orderFlight();
 
     document.getElementById('to').addEventListener('change', async (e) => {
         const city = e.target.value;
@@ -134,7 +134,7 @@ function orderFlight() {
         const departure = e.target.deparure.value;
         const returnDate = e.target.return.value;
         const tripType = document.querySelector('input[name="trip"]:checked').value;
-        const price = calculatePrice(from, to, tripType);
+        const price = calculatePrice(tripType);
 
         try {
             const docRef = await addDoc(collection(db, "bookings"), {
@@ -154,12 +154,13 @@ function orderFlight() {
             showPaymentModal(bookingId);
 
             const params = {
+                order_id: bookingId,
                 to_email: user.email,
-                from_location: from,
-                to_location: to,
+                from: from,
+                to: to,
                 departure_date: departure,
                 return_date: returnDate,
-                trip_type: tripType,
+                type: tripType,
                 price: price,
             };
             const serviceID = "service_qsn61o2";
@@ -176,7 +177,7 @@ function orderFlight() {
             displayWeather(weatherData);
 
             alert(`Ticket ordered successfully!`);
-            window.open("D:/Programming/JSI09/2093_flight/bookings.html");
+            window.open("./bookings.html", "_blank");
             e.target.reset();
         } catch (error) {
             console.error("Error adding booking: ", error);
@@ -191,20 +192,10 @@ function orderFlight() {
     });
 }
 
-function calculatePrice(from, to, tripType) {
+function calculatePrice(tripType) {
     const basePrice = 100;
-    const distanceMultiplier = getDistanceMultiplier(from, to);
     const tripMultiplier = tripType === 'round' ? 1.8 : 1;
-    return Math.round(basePrice * distanceMultiplier * tripMultiplier);
-}
-
-function getDistanceMultiplier(from, to) {
-    const routes = {
-        'Cambodia-Hong Kong': 1.5,
-        'Cambodia-India': 2.0,
-    };
-    const key = `${from}-${to}`;
-    return routes[key] || 1.2;
+    return Math.round(basePrice * tripMultiplier);
 }
 
 function updatePrice() {
@@ -218,10 +209,10 @@ function updatePrice() {
 }
 
 function showPaymentModal(bookingId) {
-    const confirmed = confirm("Bạn chưa thanh toán! Bạn có muốn thanh toán ngay không?"); // confirm(): một hàm JavaScript để hiển thị hộp thoại xác nhận với người dùng
+    const confirmed = confirm("Do you want to pay right now?"); // confirm(): một hàm JavaScript để hiển thị hộp thoại xác nhận với người dùng
     if (confirmed) {
-        // Cập nhật trạng thái booking
-        updateBookingStatus(bookingId, "paid");
+        document.getElementById('qrModal').style.display = 'flex';
+        updateBookingStatus(bookingId, "wait to verify");
     }
 }
 
@@ -230,9 +221,13 @@ async function updateBookingStatus(bookingId, status) {
     await updateDoc(bookingRef, {
         status: status
     });
-    alert("Thanh toán thành công! Vé của bạn đã được xác nhận.");
 }
 
 profileBtn.addEventListener("click", () => {
     window.location.href = "profile.html";
+});
+
+document.getElementById('confirmButton').addEventListener('click', () => {
+    alert('Thank you! We will verify your payment shortly.');
+    document.getElementById('qrModal').style.display = 'none';
 });
