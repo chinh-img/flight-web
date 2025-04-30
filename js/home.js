@@ -40,14 +40,13 @@ function displayWeather(data) {
         if (count >= 5) break;
         const items = daysMap[date];
         const temps = items.map(i => i.main.temp);
-        const avg = Math.round(temps.reduce((a, b) => a + b, 0) / temps.length); // Tính nhiệt độ trung bình
+        const avg = Math.round(temps.reduce((a, b) => a + b, 0) / temps.length);
 
         const city = data.city.name;
         const day = new Date(date).getDay();
         const weatherHTML = `
         <div id="day${count}">
             <div class="row">
-                
                     <div class="weather-item">
                         <h6>${city} (${dayNames[day]})</h6>
                         <div class="weather-icon">
@@ -56,12 +55,11 @@ function displayWeather(data) {
                         <span>${avg}&deg;C</span>
                         <ul class="time-weather">
                             ${items.slice(0, 4).map(i => {
-            const hour = new Date(i.dt_txt).getHours(); // dx_txt: chuỗi thời gian được lấy từ API OpenWeatherMap. VD: "2023-10-01 12:00:00"
+            const hour = new Date(i.dt_txt).getHours();
             return `<li>${hour}h <span>${Math.round(i.main.temp)}&deg;</span></li>`;
         }).join('')}
                         </ul>
                     </div>
-
             </div>
         </div>`;
         container.innerHTML += weatherHTML;
@@ -151,11 +149,16 @@ function orderFlight() {
             });
             const bookingId = docRef.id;
             console.log(`Booking saved with ID: ${bookingId}`);
+            // Generate QR code
+            const qrUrl = await generateBookingQR(tripType, bookingId);
+            await updateDoc(docRef, { qrCodeUrl: qrUrl });
+            console.log(`QR Code URL: ${qrUrl}`);
             showPaymentModal(bookingId);
 
             const params = {
                 order_id: bookingId,
                 to_email: user.email,
+                qrImg: qrUrl,
                 from: from,
                 to: to,
                 departure_date: departure,
@@ -209,7 +212,7 @@ function updatePrice() {
 }
 
 function showPaymentModal(bookingId) {
-    const confirmed = confirm("Do you want to pay right now?"); // confirm(): một hàm JavaScript để hiển thị hộp thoại xác nhận với người dùng
+    const confirmed = confirm("Do you want to pay right now?");
     if (confirmed) {
         document.getElementById('qrModal').style.display = 'flex';
         updateBookingStatus(bookingId, "wait to verify");
@@ -221,6 +224,22 @@ async function updateBookingStatus(bookingId, status) {
     await updateDoc(bookingRef, {
         status: status
     });
+}
+
+function generateBookingQR(tripType, bookingId) {
+    return new Promise((resolve, reject) => { // Promise để xử lý bất đồng bộ
+        const typeCode = tripType === 'round' ? '2' : '1';
+        const content = `${typeCode}-${bookingId}`;
+        QRCode.toDataURL(content, { width: 200 }, function (err, url) {
+            if (err){
+                console.error(err);
+                reject(err) // Reject nếu có lỗi
+            } else {
+                resolve(url); // Resolve với URL của QR code 
+            }
+
+        });
+    })
 }
 
 profileBtn.addEventListener("click", () => {
