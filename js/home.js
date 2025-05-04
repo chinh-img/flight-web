@@ -27,11 +27,11 @@ function displayWeather(data) {
     const container = document.querySelector('#weather .weathergroup');
     container.innerHTML = "";
 
-    const daysMap = {};
+    const daysMap = {}; // tạo một object để nhóm các ngày
     data.list.forEach(item => {
-        const date = item.dt_txt.split(" ")[0];
+        const date = item.dt_txt.split(" ")[0]; // lấy ngày từ chuỗi dt_txt
         if (!daysMap[date]) daysMap[date] = [];
-        daysMap[date].push(item);
+        daysMap[date].push(item); 
     });
 
     const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -40,7 +40,7 @@ function displayWeather(data) {
         if (count >= 5) break;
         const items = daysMap[date];
         const temps = items.map(i => i.main.temp);
-        const avg = Math.round(temps.reduce((a, b) => a + b, 0) / temps.length);
+        const avg = Math.round(temps.reduce((a, b) => a + b, 0) / temps.length); // tính nhiệt độ trung bình
 
         const city = data.city.name;
         const day = new Date(date).getDay();
@@ -84,7 +84,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
     countriesOpts();
-    orderFlight();
 
     document.getElementById('to').addEventListener('change', async (e) => {
         const city = e.target.value;
@@ -116,84 +115,84 @@ function countriesOpts() {
         .catch(error => console.error("Error fetching countries:", error));
 }
 
-function orderFlight() {
-    document.getElementById('form-submit').addEventListener('submit', async (e) => {
-        e.preventDefault();
 
-        const user = auth.currentUser;
-        if (!user) {
-            alert('Please login to book tickets');
-            window.location.href = 'register.html';
-            return;
-        }
+document.getElementById('form-submit').addEventListener('submit', async (e) => {
+    e.preventDefault(); // e: event object
 
-        const from = e.target.from.value;
-        const to = e.target.to.value;
-        const departure = e.target.deparure.value;
-        const returnDate = e.target.return.value;
-        const tripType = document.querySelector('input[name="trip"]:checked').value;
-        const price = calculatePrice(tripType);
+    const user = auth.currentUser;
+    if (!user) {
+        alert('Please login to book tickets');
+        window.location.href = 'register.html';
+        return;
+    }
 
-        try {
-            const docRef = await addDoc(collection(db, "bookings"), {
-                userId: user.uid,
-                userEmail: user.email,
-                from,
-                to,
-                departure,
-                return: returnDate,
-                tripType,
-                price,
-                status: "pending",
-                createdAt: serverTimestamp()
-            });
-            const bookingId = docRef.id;
-            console.log(`Booking saved with ID: ${bookingId}`);
-            // Generate QR code
-            const qrUrl = await generateBookingQR(tripType, bookingId);
-            await updateDoc(docRef, { qrCodeUrl: qrUrl });
-            console.log(`QR Code URL: ${qrUrl}`);
-            showPaymentModal(bookingId);
+    const from = e.target.from.value; // e.target: lấy dữ liệu từ form
+    const to = e.target.to.value;
+    const departure = e.target.deparure.value;
+    const returnDate = e.target.return.value;
+    const tripType = document.querySelector('input[name="trip"]:checked').value;
+    const price = calculatePrice(tripType);
 
-            const params = {
-                order_id: bookingId,
-                to_email: user.email,
-                qrImg: qrUrl,
-                from: from,
-                to: to,
-                departure_date: departure,
-                return_date: returnDate,
-                type: tripType,
-                price: price,
-            };
-            const serviceID = "service_qsn61o2";
-            const templateID = "template_5vvrfh9";
+    try {
+        const docRef = await addDoc(collection(db, "bookings"), {
+            userId: user.uid,
+            userEmail: user.email,
+            from,
+            to,
+            departure,
+            return: returnDate,
+            tripType,
+            price,
+            status: "pending",
+            createdAt: serverTimestamp()
+        });
+        const bookingId = docRef.id;
+        console.log(`Booking saved with ID: ${bookingId}`);
+        // Generate QR code
+        const qrUrl = await generateBookingQR(tripType, bookingId);
+        await updateDoc(docRef, { qrCodeUrl: qrUrl });
+        console.log(`QR Code URL: ${qrUrl}`);
+        showPaymentModal(bookingId);
 
-            await emailjs.send(serviceID, templateID, params)
-                .then(res => {
-                    console.log(res);
-                    alert("Confirmation email sent successfully!");
-                })
-                .catch(err => console.error(err));
+        const params = {
+            order_id: bookingId,
+            to_email: user.email,
+            qrImg: qrUrl,
+            from: from,
+            to: to,
+            departure_date: departure,
+            return_date: returnDate,
+            type: tripType,
+            price: price,
+        };
+        const serviceID = "service_qsn61o2";
+        const templateID = "template_5vvrfh9";
 
-            const weatherData = await getWeatherForecast(to);
-            displayWeather(weatherData);
+        await emailjs.send(serviceID, templateID, params)
+            .then(res => {
+                console.log(res);
+                alert("Confirmation email sent successfully!");
+            })
+            .catch(err => console.error(err));
 
-            alert(`Ticket ordered successfully!`);
-            window.open("./bookings.html", "_blank");
-            e.target.reset();
-        } catch (error) {
-            console.error("Error adding booking: ", error);
-            alert('Failed to order ticket. Please try again.');
-        }
-    });
+        const weatherData = await getWeatherForecast(to);
+        displayWeather(weatherData);
 
-    document.getElementById('from').addEventListener('change', updatePrice);
-    document.getElementById('to').addEventListener('change', updatePrice);
-    document.querySelectorAll('input[name="trip"]').forEach(radio => {
-        radio.addEventListener('change', updatePrice);
-    });
-}
+        alert(`Ticket ordered successfully!`);
+        window.open("./bookings.html", "_blank");
+        e.target.reset();
+    } catch (error) {
+        console.error("Error adding booking: ", error);
+        alert('Failed to order ticket. Please try again.');
+    }
+});
+
+document.getElementById('from').addEventListener('change', updatePrice);
+document.getElementById('to').addEventListener('change', updatePrice);
+document.querySelectorAll('input[name="trip"]').forEach(radio => {
+    radio.addEventListener('change', updatePrice);
+});
+
 
 function calculatePrice(tripType) {
     const basePrice = 100;
@@ -231,7 +230,7 @@ function generateBookingQR(tripType, bookingId) {
         const typeCode = tripType === 'round' ? '2' : '1';
         const content = `${typeCode}-${bookingId}`;
         QRCode.toDataURL(content, { width: 200 }, function (err, url) {
-            if (err){
+            if (err) {
                 console.error(err);
                 reject(err) // Reject nếu có lỗi
             } else {
